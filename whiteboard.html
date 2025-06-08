@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ConnectEd Whiteboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <style>
+        #whiteboard { border: 1px solid #000; }
+    </style>
+</head>
+<body>
+    <canvas id="whiteboard" width="800" height="600"></canvas>
+    <script>
+        var canvas = new fabric.Canvas('whiteboard');
+        canvas.isDrawingMode = true;
+        canvas.freeDrawingBrush.color = "black";
+        canvas.freeDrawingBrush.width = 5;
+    </script>
+</body>
+</html>
