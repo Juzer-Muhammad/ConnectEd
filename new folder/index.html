@@ -1,69 +1,1250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ConnectEd - Personalized Learning Help</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConnectEd - Connecting Students, Teachers & Parents</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #7c3aed;
+            --accent-color: #f59e0b;
+            --success-color: #10b981;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: var(--white);
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .cta-button {
+            background: var(--accent-color);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Mobile Menu */
+        .hamburger {
+            display: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 8rem 0 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,255,255,0.1)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="400" cy="700" r="120" fill="url(%23a)"/></svg>');
+            opacity: 0.1;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--white), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: var(--white);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary:hover, .btn-secondary:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 0;
+            background: var(--bg-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 1px solid rgba(37, 99, 235, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--white);
+            font-size: 2rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 6rem 0;
+            background: var(--white);
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--white);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .step p {
+            color: var(--text-light);
+        }
+
+        /* User Types */
+        .user-types {
+            padding: 6rem 0;
+            background: var(--bg-light);
+        }
+
+        .user-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .user-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .user-card-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            text-align: center;
+        }
+
+        .user-card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-card-body {
+            padding: 2rem;
+        }
+
+        .user-card ul {
+            list-style: none;
+        }
+
+        .user-card li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .user-card li i {
+            color: var(--success-color);
+        }
+
+        /* Statistics */
+        .stats {
+            padding: 4rem 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Technology Stack */
+        .tech-stack {
+            padding: 6rem 0;
+            background: var(--white);
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .tech-item {
+            text-align: center;
+            padding: 2rem 1rem;
+            border-radius: 15px;
+            background: var(--bg-light);
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            background: var(--white);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .tech-item i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .tech-item h4 {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-item p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* Call to Action */
+        .cta-section {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, var(--accent-color), #ea580c);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: var(--white);
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #d1d5db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-color);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 2rem;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        .project-info {
+            background: rgba(37, 99, 235, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 2rem 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .project-info h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .user-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-  <header class="navbar">
-    <div class="logo">ConnectEd</div>
-    <nav>
-      <ul>
-        <li><a href="#about">About</a></li>
-        <li><a href="#how">How It Works</a></li>
-        <li><a href="#search">Search Tutors</a></li>
-        <li><button id="loginBtn">Login</button></li>
-        <li><button id="registerBtn">Register</button></li>
-      </ul>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                ConnectEd
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+                <li><a href="#users" class="nav-link">For Users</a></li>
+                <li><a href="#technology" class="nav-link">Technology</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="#" class="cta-button">Get Started</a></li>
+            </ul>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
     </nav>
-  </header>
 
-  <section class="hero">
-    <div class="hero-text">
-      <h1>Find the Right Learning Help, Anytime</h1>
-      <p>Connect with experienced teachers and qualified tutors directly.</p>
-      <a href="#search" class="btn-primary">Get Started</a>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <h1>Connecting Students, Teachers & Parents</h1>
+            <p>ConnectEd is the ultimate platform that bridges the gap between learners and educators through secure, scalable cloud technology.</p>
+            <div class="hero-buttons">
+                <a href="#features" class="btn-primary">
+                    <i class="fas fa-rocket"></i>
+                    Explore Platform
+                </a>
+                <a href="#demo" class="btn-secondary">
+                    <i class="fas fa-play"></i>
+                    Watch Demo
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Information -->
+    <section class="container" style="padding-top: 2rem;">
+        <div class="project-info">
+            <h4><i class="fas fa-info-circle"></i> ICT171 Assignment 2 - Cloud Server Project</h4>
+            <p><strong>Student:</strong> [Your Name] | <strong>Student ID:</strong> [Your Student Number]</p>
+            <p><strong>Domain:</strong> connected.zapto.org | <strong>Server:</strong> AWS EC2 Ubuntu 22.04</p>
+            <p><strong>GitHub:</strong> <a href="https://github.com/syedaliabbas1/AWS-Project" target="_blank">github.com/syedaliabbas1/AWS-Project</a></p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Powerful Features for Modern Learning</h2>
+                <p class="section-subtitle">ConnectEd provides everything needed to create meaningful connections between students, teachers, and parents in a secure digital environment.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card animate-fade-in-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Smart Teacher Matching</h3>
+                    <p>Advanced AI-powered algorithms match students with the perfect teachers based on learning style, subject expertise, and personality compatibility.</p>
+                </div>
+                <div class="feature-card animate-fade-in-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3>Interactive Whiteboard</h3>
+                    <p>Built-in collaborative whiteboard technology enables real-time visual learning with drawing tools, screen sharing, and multimedia support.</p>
+                </div>
+                <div class="feature-card animate-fade-in-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure Communication</h3>
+                    <p>End-to-end encrypted messaging system ensures safe communication between parents, students, and educators with moderation tools.</p>
+                </div>
+                <div class="feature-card animate-fade-in-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <h3>Verified Profiles</h3>
+                    <p>Comprehensive verification system for educators including background checks, qualification verification, and peer reviews.</p>
+                </div>
+                <div class="feature-card animate-fade-in-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-blog"></i>
+                    </div>
+                    <h3>Educational Blog Platform</h3>
+                    <p>Teachers and tutors can share knowledge through an integrated blog system with rich content creation tools and community interaction.</p>
+                </div>
+                <div class="feature-card animate-fade-in-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Progress Tracking</h3>
+                    <p>Comprehensive analytics and reporting tools help parents and students track learning progress with detailed insights and recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How ConnectEd Works</h2>
+                <p class="section-subtitle">Simple steps to connect learners with the perfect educational support</p>
+            </div>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Create Profile</h3>
+                    <p>Students and parents create detailed profiles including learning preferences, subjects of interest, and specific requirements.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Smart Matching</h3>
+                    <p>Our AI algorithm analyzes profiles and matches students with the most suitable teachers based on multiple compatibility factors.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Connect & Learn</h3>
+                    <p>Start learning immediately with integrated video calls, interactive whiteboards, and secure messaging systems.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Track Progress</h3>
+                    <p>Monitor learning outcomes with detailed analytics, progress reports, and continuous feedback from educators.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Types -->
+    <section id="users" class="user-types">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Built for Everyone in Education</h2>
+                <p class="section-subtitle">ConnectEd serves the unique needs of students, parents, teachers, and tutors</p>
+            </div>
+            <div class="user-cards">
+                <div class="user-card">
+                    <div class="user-card-header">
+                        <div class="user-card-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3>For Students</h3>
+                        <p>Personalized learning experiences</p>
+                    </div>
+                    <div class="user-card-body">
+                        <ul>
+                            <li><i class="fas fa-check"></i> Access to verified expert tutors</li>
+                            <li><i class="fas fa-check"></i> Interactive learning tools</li>
+                            <li><i class="fas fa-check"></i> Flexible scheduling options</li>
+                            <li><i class="fas fa-check"></i> Progress tracking dashboard</li>
+                            <li><i class="fas fa-check"></i> Subject-specific resources</li>
+                            <li><i class="fas fa-check"></i> Peer learning communities</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="user-card">
+                    <div class="user-card-header">
+                        <div class="user-card-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>For Parents</h3>
+                        <p>Peace of mind and involvement</p>
+                    </div>
+                    <div class="user-card-body">
+                        <ul>
+                            <li><i class="fas fa-check"></i> Verified educator backgrounds</li>
+                            <li><i class="fas fa-check"></i> Real-time progress monitoring</li>
+                            <li><i class="fas fa-check"></i> Secure payment processing</li>
+                            <li><i class="fas fa-check"></i> Direct communication with teachers</li>
+                            <li><i class="fas fa-check"></i> Detailed learning reports</li>
+                            <li><i class="fas fa-check"></i> Safety and security controls</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="user-card">
+                    <div class="user-card-header">
+                        <div class="user-card-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h3>For Educators</h3>
+                        <p>Expand your reach and impact</p>
+                    </div>
+                    <div class="user-card-body">
+                        <ul>
+                            <li><i class="fas fa-check"></i> Professional profile showcase</li>
+                            <li><i class="fas fa-check"></i> Integrated teaching tools</li>
+                            <li><i class="fas fa-check"></i> Blog platform for sharing knowledge</li>
+                            <li><i class="fas fa-check"></i> Automated scheduling system</li>
+                            <li><i class="fas fa-check"></i> Payment processing integration</li>
+                            <li><i class="fas fa-check"></i> Student progress analytics</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3 id="students-count">10,000+</h3>
+                    <p>Active Students</p>
+                </div>
+                <div class="stat-item">
+                    <h3 id="teachers-count">2,500+</h3>
+                    <p>Verified Teachers</p>
+                </div>
+                <div class="stat-item">
+                    <h3 id="sessions-count">50,000+</h3>
+                    <p>Learning Sessions</p>
+                </div>
+                <div class="stat-item">
+                    <h3 id="satisfaction-rate">98%</h3>
+                    <p>Satisfaction Rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section id="technology" class="tech-stack">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Built with Modern Technology</h2>
+                <p class="section-subtitle">ConnectEd leverages cutting-edge cloud infrastructure and modern web technologies for optimal performance and scalability</p>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <i class="fab fa-aws"></i>
+                    <h4>AWS Cloud</h4>
+                    <p>Scalable infrastructure</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fab fa-ubuntu"></i>
+                    <h4>Ubuntu Server</h4>
+                    <p>Reliable Linux OS</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-server"></i>
+                    <h4>Nginx</h4>
+                    <p>High-performance web server</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-lock"></i>
+                    <h4>SSL/TLS</h4>
+                    <p>End-to-end encryption</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fab fa-html5"></i>
+                    <h4>HTML5</h4>
+                    <p>Modern web standards</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fab fa-css3-alt"></i>
+                    <h4>CSS3</h4>
+                    <p>Advanced styling</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fab fa-js-square"></i>
+                    <h4>JavaScript</h4>
+                    <p>Interactive functionality</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fab fa-git-alt"></i>
+                    <h4>Git/GitHub</h4>
+                    <p>Version control</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Interactive Platform Demo</h2>
+                <p class="section-subtitle">Experience ConnectEd's features with our interactive demonstrations</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3>Virtual Classroom</h3>
+                    <p>Experience our virtual classroom with HD video calls, screen sharing, and collaborative tools.</p>
+                    <button class="btn-primary" onclick="openVirtualClassroom()" style="margin-top: 1rem; border: none; cursor: pointer;">
+                        <i class="fas fa-play"></i> Launch Demo
+                    </button>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3>Interactive Whiteboard</h3>
+                    <p>Try our collaborative whiteboard with drawing tools, shapes, and real-time collaboration.</p>
+                    <button class="btn-primary" onclick="openWhiteboard()" style="margin-top: 1rem; border: none; cursor: pointer;">
+                        <i class="fas fa-paint-brush"></i> Try Whiteboard
+                    </button>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>Messaging System</h3>
+                    <p>Test our secure messaging platform with file sharing and real-time communication.</p>
+                    <button class="btn-primary" onclick="openMessaging()" style="margin-top: 1rem; border: none; cursor: pointer;">
+                        <i class="fas fa-envelope"></i> Open Chat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Transform Learning?</h2>
+            <p>Join thousands of students, parents, and educators already using ConnectEd to achieve better learning outcomes.</p>
+            <div class="hero-buttons">
+                <a href="#" class="btn-primary">
+                    <i class="fas fa-rocket"></i>
+                    Start Free Trial
+                </a>
+                <a href="#contact" class="btn-secondary">
+                    <i class="fas fa-phone"></i>
+                    Contact Sales
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ConnectEd</h3>
+                    <p>Bridging the gap between learners and educators through innovative cloud technology.</p>
+                    <div style="margin-top: 1rem;">
+                        <a href="#" style="margin-right: 1rem; font-size: 1.5rem;"><i class="fab fa-facebook"></i></a>
+                        <a href="#" style="margin-right: 1rem; font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="margin-right: 1rem; font-size: 1.5rem;"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" style="margin-right: 1rem; font-size: 1.5rem;"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#users">For Users</a></li>
+                        <li><a href="#technology">Technology</a></li>
+                        <li><a href="#demo">Demo</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#">System Status</a></li>
+                        <li><a href="#">Contact Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> info@connected.zapto.org</li>
+                        <li><i class="fas fa-phone"></i> +61 (0) 123 456 789</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Perth, Western Australia</li>
+                        <li><i class="fab fa-github"></i> <a href="https://github.com/syedaliabbas1/AWS-Project">GitHub Repository</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ConnectEd Platform. ICT171 Assignment 2 - Cloud Server Project.</p>
+                <p>Deployed on AWS EC2 with SSL encryption. Built with modern web technologies.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for Virtual Classroom Demo -->
+    <div id="classroomModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: 15px; max-width: 800px; width: 90%; max-height: 80%; overflow-y: auto;">
+            <h3 style="margin-bottom: 1rem;">Virtual Classroom Demo</h3>
+            <div style="background: #f8fafc; padding: 2rem; border-radius: 10px; text-align: center; margin-bottom: 1rem;">
+                <i class="fas fa-video" style="font-size: 4rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                <p>Virtual classroom would feature:</p>
+                <ul style="text-align: left; margin: 1rem 0;">
+                    <li>HD video conferencing with up to 50 participants</li>
+                    <li>Screen sharing and remote desktop control</li>
+                    <li>Breakout rooms for group activities</li>
+                    <li>Recording capabilities for later review</li>
+                    <li>Real-time attendance tracking</li>
+                </ul>
+            </div>
+            <button onclick="closeModal('classroomModal')" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 25px; cursor: pointer;">Close Demo</button>
+        </div>
     </div>
-  </section>
 
-  <section id="about" class="info-section">
-    <h2>Why ConnectEd?</h2>
-    <p>We connect parents and students to educators who understand personalized learning. Our platform uses smart filters, secure messaging, and verified profiles to ensure the best match possible.</p>
-  </section>
-
-  <section id="how" class="info-section">
-    <h2>How It Works</h2>
-    <ol>
-      <li>Search for the right teacher or tutor by subject, level, and style.</li>
-      <li>View verified profiles and read reviews.</li>
-      <li>Message securely and start learning online with live tools.</li>
-    </ol>
-  </section>
-
-  <section id="search" class="card-section">
-    <h2>Featured Educators</h2>
-    <div class="card-container">
-      <div class="card">
-        <h3>Sarah L.</h3>
-        <p>Math | High School | Visual Learning</p>
-      </div>
-      <div class="card">
-        <h3>John D.</h3>
-        <p>English | Year 7-10 | Interactive Approach</p>
-      </div>
-      <div class="card">
-        <h3>Ayesha K.</h3>
-        <p>Science | Primary | Step-by-step Support</p>
-      </div>
+    <!-- Modal for Whiteboard Demo -->
+    <div id="whiteboardModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: 15px; max-width: 800px; width: 90%; max-height: 80%; overflow-y: auto;">
+            <h3 style="margin-bottom: 1rem;">Interactive Whiteboard Demo</h3>
+            <div id="whiteboard" style="background: #f8fafc; height: 400px; border: 2px solid #e2e8f0; border-radius: 10px; position: relative; margin-bottom: 1rem; cursor: crosshair;">
+                <canvas id="drawingCanvas" width="760" height="380" style="position: absolute; top: 10px; left: 10px;"></canvas>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <button onclick="clearCanvas()" style="background: var(--accent-color); color: white; border: none; padding: 0.5rem 1rem; border-radius: 20px; margin-right: 1rem; cursor: pointer;">Clear</button>
+                <button onclick="changeColor('red')" style="background: red; width: 30px; height: 30px; border: none; border-radius: 50%; margin-right: 0.5rem; cursor: pointer;"></button>
+                <button onclick="changeColor('blue')" style="background: blue; width: 30px; height: 30px; border: none; border-radius: 50%; margin-right: 0.5rem; cursor: pointer;"></button>
+                <button onclick="changeColor('green')" style="background: green; width: 30px; height: 30px; border: none; border-radius: 50%; margin-right: 0.5rem; cursor: pointer;"></button>
+                <button onclick="changeColor('black')" style="background: black; width: 30px; height: 30px; border: none; border-radius: 50%; cursor: pointer;"></button>
+            </div>
+            <button onclick="closeModal('whiteboardModal')" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 25px; cursor: pointer;">Close Whiteboard</button>
+        </div>
     </div>
-  </section>
 
-  <footer>
-    <p>&copy; 2025 ConnectEd. All rights reserved.</p>
-  </footer>
+    <!-- Modal for Messaging Demo -->
+    <div id="messagingModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: 15px; max-width: 600px; width: 90%; max-height: 80%; overflow-y: auto;">
+            <h3 style="margin-bottom: 1rem;">Secure Messaging Demo</h3>
+            <div id="chatContainer" style="background: #f8fafc; height: 300px; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem; overflow-y: auto; margin-bottom: 1rem;">
+                <div class="message" style="margin-bottom: 1rem; padding: 0.75rem; background: white; border-radius: 10px; border-left: 4px solid var(--primary-color);">
+                    <strong>Teacher Sarah:</strong> Welcome to ConnectEd! I'm excited to work with you.
+                </div>
+                <div class="message" style="margin-bottom: 1rem; padding: 0.75rem; background: white; border-radius: 10px; border-left: 4px solid var(--success-color);">
+                    <strong>Student Alex:</strong> Thank you! I'm looking forward to our sessions.
+                </div>
+                <div class="message" style="margin-bottom: 1rem; padding: 0.75rem; background: white; border-radius: 10px; border-left: 4px solid var(--accent-color);">
+                    <strong>Parent (Alex's Mom):</strong> Great to meet you! Alex is excited about math tutoring.
+                </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                <input type="text" id="messageInput" placeholder="Type your message..." style="flex: 1; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 25px; outline: none;">
+                <button onclick="sendMessage()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 25px; cursor: pointer;">Send</button>
+            </div>
+            <button onclick="closeModal('messagingModal')" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 25px; cursor: pointer;">Close Chat</button>
+        </div>
+    </div>
 
-  <script src="script.js"></script>
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Animate numbers on scroll
+            animateNumbers();
+            
+            // Add scroll effect to navbar
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 100) {
+                    navbar.style.background = 'linear-gradient(135deg, rgba(37, 99, 235, 0.95), rgba(124, 58, 237, 0.95))';
+                } else {
+                    navbar.style.background = 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))';
+                }
+            });
+        });
+
+        // Animate statistics numbers
+        function animateNumbers() {
+            const stats = [
+                { id: 'students-count', target: 10000, suffix: '+' },
+                { id: 'teachers-count', target: 2500, suffix: '+' },
+                { id: 'sessions-count', target: 50000, suffix: '+' },
+                { id: 'satisfaction-rate', target: 98, suffix: '%' }
+            ];
+
+            stats.forEach(stat => {
+                const element = document.getElementById(stat.id);
+                let current = 0;
+                const increment = stat.target / 100;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= stat.target) {
+                        current = stat.target;
+                        clearInterval(timer);
+                    }
+                    element.textContent = Math.floor(current).toLocaleString() + stat.suffix;
+                }, 20);
+            });
+        }
+
+        // Demo functionality
+        function openVirtualClassroom() {
+            document.getElementById('classroomModal').style.display = 'flex';
+        }
+
+        function openWhiteboard() {
+            document.getElementById('whiteboardModal').style.display = 'flex';
+            initializeCanvas();
+        }
+
+        function openMessaging() {
+            document.getElementById('messagingModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Whiteboard functionality
+        let canvas, ctx, isDrawing = false, currentColor = 'black';
+
+        function initializeCanvas() {
+            canvas = document.getElementById('drawingCanvas');
+            ctx = canvas.getContext('2d');
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function changeColor(color) {
+            currentColor = color;
+            ctx.strokeStyle = color;
+        }
+
+        // Messaging functionality
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                const chatContainer = document.getElementById('chatContainer');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                messageDiv.style.cssText = 'margin-bottom: 1rem; padding: 0.75rem; background: white; border-radius: 10px; border-left: 4px solid var(--secondary-color);';
+                messageDiv.innerHTML = `<strong>You:</strong> ${message}`;
+                
+                chatContainer.appendChild(messageDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                input.value = '';
+                
+                // Simulate response
+                setTimeout(() => {
+                    const responseDiv = document.createElement('div');
+                    responseDiv.className = 'message';
+                    responseDiv.style.cssText = 'margin-bottom: 1rem; padding: 0.75rem; background: white; border-radius: 10px; border-left: 4px solid var(--primary-color);';
+                    responseDiv.innerHTML = '<strong>ConnectEd Bot:</strong> Thanks for your message! A real teacher would respond here.';
+                    
+                    chatContainer.appendChild(responseDiv);
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }, 1000);
+            }
+        }
+
+        // Add enter key support for messaging
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && document.getElementById('messagingModal').style.display === 'flex') {
+                sendMessage();
+            }
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(e) {
+            const modals = ['classroomModal', 'whiteboardModal', 'messagingModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (e.target === modal) {
+                    closeModal(modalId);
+                }
+            });
+        });
+
+        // Add loading states for buttons
+        document.querySelectorAll('.btn-primary, .btn-secondary').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '#' || this.onclick) {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<span class="loading"></span> Loading...';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 1000);
+                }
+            });
+        });
+
+        // Console welcome message
+        console.log(`
+🚀 ConnectEd Platform - ICT171 Assignment 2
+📧 Domain: connected.zapto.org
+☁️  Hosted on: AWS EC2 (Ubuntu 22.04)
+🔒 SSL: Enabled with Let's Encrypt
+📝 Repository: github.com/syedaliabbas1/AWS-Project
+        `);
+
+        // Add scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .user-card, .step').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Add mobile menu functionality
+        document.querySelector('.hamburger').addEventListener('click', function() {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.classList.toggle('active');
+        });
+    </script>
 </body>
 </html>
