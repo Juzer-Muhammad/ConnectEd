@@ -1,4 +1,3 @@
-// app.js - Node.js without npm
 const http = require('http');
 const fs = require('fs');
 const url = require('url');
@@ -6,39 +5,35 @@ const crypto = require('crypto');
 const { parse } = require('querystring');
 
 const PORT = 3000;
-const users = {}; // In-memory store (replace with file or database in production)
+const users = {}; // In-memory store
 const messages = {}; // In-memory store for messages
-
-// Simple session management
-const sessions = {};
+const sessions = {}; // Session management
+const blogPosts = {}; // In-memory store for blog
+const progress = {}; // In-memory store for progress
 
 const server = http.createServer((req, res) => {
     const parsedUrl = url.parse(req.url, true);
     const pathname = parsedUrl.pathname;
     const method = req.method;
 
-    // Parse request body
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
         const data = parse(body);
+        const sessionId = parsedUrl.query.sessionId;
 
-        // User Profiles
         if (pathname === '/register' && method === 'POST') {
-            const { email, password, role } = data;
+            const { email, password, role, qualifications, subjects, grades, style } = data;
             if (!users[email]) {
                 const hash = crypto.createHash('sha256').update(password).digest('hex');
-                users[email] = { role, password: hash, created_at: new Date().toISOString() };
+                users[email] = { role, password: hash, qualifications, subjects, grades, style, created_at: new Date().toISOString() };
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ message: 'User registered', user: email }));
             } else {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'User exists' }));
             }
-        }
-
-        // Login
-        else if (pathname === '/login' && method === 'POST') {
+        } else if (pathname === '/login' && method === 'POST') {
             const { email, password } = data;
             const hash = crypto.createHash('sha256').update(password).digest('hex');
             if (users[email] && users[email].password === hash) {
@@ -50,11 +45,7 @@ const server = http.createServer((req, res) => {
                 res.writeHead(401, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Invalid credentials' }));
             }
-        }
-
-        // Profile
-        else if (pathname === '/profile' && method === 'GET') {
-            const sessionId = parsedUrl.query.sessionId;
+        } else if (pathname === '/profile' && method === 'GET') {
             if (sessions[sessionId]) {
                 const email = sessions[sessionId];
                 res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -63,20 +54,20 @@ const server = http.createServer((req, res) => {
                 res.writeHead(401, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Not logged in' }));
             }
-        }
-
-        // Smart Matching (Placeholder without SageMaker)
-        else if (pathname === '/match' && method === 'POST') {
-            const { preferences } = data;
-            // Simulate matching logic
-            const matches = Object.keys(users).filter(u => u !== sessions[parsedUrl.query.sessionId] && users[u].role !== users[sessions[parsedUrl.query.sessionId]].role);
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ matches }));
-        }
-
-        // Secure Messaging
-        else if (pathname === '/send_message' && method === 'POST') {
-            const sessionId = parsedUrl.query.sessionId;
+        } else if (pathname === '/match' && method === 'POST') {
+            if (sessions[sessionId]) {
+                const { subjects, grades, style } = users[sessions[sessionId]] || {};
+                const matches = Object.keys(users).filter(u => u !== sessions[sessionId] && users[u].role === 'teacher' &&
+                    (!subjects || users[u].subjects.includes(subjects)) &&
+                    (!grades || users[u].grades.includes(grades)) &&
+                    (!style || users[u].style.includes(style)));
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ matches }));
+            } else {
+                res.writeHead(401, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Not logged in' }));
+            }
+        } else if (pathname === '/send_message' && method === 'POST') {
             if (sessions[sessionId]) {
                 const { receiver, content } = data;
                 const messageId = crypto.randomBytes(16).toString('hex');
@@ -87,10 +78,7 @@ const server = http.createServer((req, res) => {
                 res.writeHead(401, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Not logged in' }));
             }
-        }
-
-        else if (pathname === '/messages' && method === 'GET') {
-            const sessionId = parsedUrl.query.sessionId;
+        } else if (pathname === '/messages' && method === 'GET') {
             if (sessions[sessionId]) {
                 const receiver = sessions[sessionId];
                 const userMessages = Object.values(messages).filter(m => m.receiver === receiver);
@@ -100,39 +88,59 @@ const server = http.createServer((req, res) => {
                 res.writeHead(401, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Not logged in' }));
             }
-        }
-
-        // Online Whiteboard (Serve HTML)
-        else if (pathname === '/whiteboard') {
+        } else if (pathname === '/whiteboard') {
             fs.readFile('whiteboard.html', (err, data) => {
                 if (err) {
-                    res.writeHead(500);
+                    res.writeHead(500, { 'Content-Type': 'text/plain' });
                     res.end('Error loading whiteboard');
                 } else {
                     res.writeHead(200, { 'Content-Type': 'text/html' });
                     res.end(data);
                 }
             });
-        }
-
-        // Payment System (Placeholder)
-        else if (pathname === '/pay' && method === 'POST') {
-            const sessionId = parsedUrl.query.sessionId;
+        } else if (pathname === '/blog' && method === 'POST') {
+            if (sessions[sessionId] && users[sessions[sessionId]].role === 'teacher') {
+                const { content } = data;
+                const postId = crypto.randomBytes(16).toString('hex');
+                blogPosts[postId] = { author: sessions[sessionId], content, timestamp: new Date().toISOString() };
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: 'Blog post created' }));
+            } else {
+                res.writeHead(403, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Only teachers can post blogs' }));
+            }
+        } else if (pathname === '/pay' && method === 'POST') {
             if (sessions[sessionId]) {
                 const { amount } = data;
                 const receipt = `Payment of $${amount} by ${sessions[sessionId]} at ${new Date().toISOString()}`;
-                // Placeholder: In production, use fs to save to file or integrate with payment gateway
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ message: 'Payment processed', receipt }));
             } else {
                 res.writeHead(401, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Not logged in' }));
             }
-        }
-
-        // Default
-        else {
-            res.writeHead(404);
+        } else if (pathname === '/progress' && method === 'GET') {
+            if (sessions[sessionId]) {
+                const email = sessions[sessionId];
+                if (!progress[email]) progress[email] = { updates: [], lastUpdate: null };
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(progress[email]));
+            } else {
+                res.writeHead(401, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Not logged in' }));
+            }
+        } else if (pathname === '/') {
+            fs.readFile('index.html', (err, data) => {
+                if (err) {
+                    res.writeHead(500, { 'Content-Type': 'text/plain' });
+                    res.end('Error loading home page');
+                } else {
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(data);
+                }
+            });
+        } else {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
             res.end('Not Found');
         }
     });
@@ -141,4 +149,3 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
-

@@ -1,19 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>ConnectEd Whiteboard</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <script src="app.js"></script>
     <style>
-        #whiteboard { border: 1px solid #000; }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f0f0f0; }
+        h1 { color: #333; text-align: center; }
+        #canvas { border: 2px solid #4CAF50; margin: 0 auto; display: block; }
+        .tools { text-align: center; margin: 10px 0; }
+        .tool-btn { padding: 5px 10px; margin: 0 5px; background: #ddd; border: none; border-radius: 5px; cursor: pointer; }
+        .tool-btn:hover { background: #bbb; }
     </style>
 </head>
 <body>
-    <canvas id="whiteboard" width="800" height="600"></canvas>
+    <h1>Collaborative Whiteboard</h1>
+    <div class="tools">
+        <button class="tool-btn" onclick="canvas.freeDrawingBrush.color='black'">Black</button>
+        <button class="tool-btn" onclick="canvas.freeDrawingBrush.color='red'">Red</button>
+        <button class="tool-btn" onclick="canvas.freeDrawingBrush.width=5">Thick</button>
+        <button class="tool-btn" onclick="canvas.freeDrawingBrush.width=2">Thin</button>
+    </div>
+    <canvas id="canvas" width="800" height="600"></canvas>
     <script>
-        var canvas = new fabric.Canvas('whiteboard');
+        const canvas = new fabric.Canvas('canvas');
         canvas.isDrawingMode = true;
-        canvas.freeDrawingBrush.color = "black";
-        canvas.freeDrawingBrush.width = 5;
+        canvas.freeDrawingBrush.color = 'black';
+        canvas.freeDrawingBrush.width = 2;
     </script>
 </body>
 </html>

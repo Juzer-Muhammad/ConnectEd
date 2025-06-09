@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ConnectEd - Personalized Learning Platform</title>
+    <script src="app.js"></script>
+    <a href="whiteboard.html">Open Whiteboard</a>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f0f0f0; }
+        h1 { color: #333; text-align: center; }
+        h2 { color: #444; }
+        .intro { text-align: center; margin-bottom: 20px; color: #0066cc; font-size: 1.2em; }
+        form { max-width: 400px; margin: 0 auto; padding: 20px; background: #fff; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        label { display: block; margin: 10px 0 5px; }
+        input, select { width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; }
+        button { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        #message, #session { text-align: center; color: #d32f2f; margin-top: 10px; }
+        nav { text-align: center; margin: 20px 0; }
+        nav a { margin: 0 10px; text-decoration: none; color: #4CAF50; font-weight: bold; }
+        nav a:hover { color: #45a049; }
+        .blog-post { margin: 20px 0; padding: 15px; background: #fff; border-left: 4px solid #4CAF50; }
+        .qualifications { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>ConnectEd</h1>
+    <div class="intro">Join the Future of Personalized Learning – Connect Students, Teachers, and Parents Safely!</div>
+    <form id="registerForm" style="display: block;">
+        <h2>Register</h2>
+        <label>Email: <input type="email" name="email" required></label><br>
+        <label>Password: <input type="password" name="password" required></label><br>
+        <label>Role: 
+            <select name="role" required>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="parent">Parent</option>
+            </select>
+        </label><br>
+        <label>Qualifications (Teachers): <input type="text" name="qualifications" placeholder="e.g., BSc, 5 yrs exp"></label><br>
+        <label>Subjects: <input type="text" name="subjects" placeholder="e.g., Math, Science"></label><br>
+        <label>Grade Levels: <input type="text" name="grades" placeholder="e.g., 1-5, 6-8"></label><br>
+        <label>Teaching Style: <input type="text" name="style" placeholder="e.g., Interactive, Lecture"></label><br>
+        <button type="submit">Register</button>
+    </form>
+    <form id="loginForm" style="display: none;">
+        <h2>Login</h2>
+        <label>Email: <input type="email" name="email" required></label><br>
+        <label>Password: <input type="password" name="password" required></label><br>
+        <button type="submit">Login</button>
+    </form>
+    <p id="message"></p>
+    <nav id="nav" style="display: none;">
+        <a href="/whiteboard">Whiteboard</a>
+        <a href="/profile">Profile</a>
+        <a href="/match">Find Tutor</a>
+        <a href="/send_message">Send Message</a>
+        <a href="/messages">Messages</a>
+        <a href="/blog">Teacher Blog</a>
+        <a href="/pay">Pay Tutor</a>
+        <a href="/progress">Progress</a>
+    </nav>
+    <div id="blog" style="display: none;" class="blog-post">
+        <h2>Teacher Blog</h2>
+        <textarea id="blogContent" rows="4" cols="50" placeholder="Share your teaching tips..."></textarea><br>
+        <button onclick="postBlog()">Post</button>
+    </div>
+    <p id="session"></p>
+
+    <script>
+        let sessionId = null;
+        const registerForm = document.getElementById('registerForm');
+        const loginForm = document.getElementById('loginForm');
+        const nav = document.getElementById('nav');
+        const blog = document.getElementById('blog');
+        const message = document.getElementById('session');
+
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(new FormData(registerForm)).toString()
+            }).then(res => res.json()).then(data => {
+                document.getElementById('message').textContent = data.message || data.error;
+            });
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(new FormData(loginForm)).toString()
+            }).then(res => res.json()).then(data => {
+                if (data.message) {
+                    sessionId = data.sessionId;
+                    message.textContent = `Logged in as ${loginForm.email.value} (Session: ${sessionId})`;
+                    loginForm.style.display = 'none';
+                    nav.style.display = 'block';
+                    blog.style.display = 'block';
+                } else {
+                    document.getElementById('message').textContent = data.error;
+                }
+            });
+        });
+
+        document.querySelectorAll('form button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                registerForm.style.display = btn.form === registerForm ? 'block' : 'none';
+                loginForm.style.display = btn.form === loginForm ? 'block' : 'none';
+            });
+        });
+
+        nav.querySelectorAll('a').forEach(a => {
+            a.href += `?sessionId=${sessionId}`;
+        });
+
+        function postBlog() {
+            if (sessionId) {
+                fetch('/blog', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `sessionId=${sessionId}&content=${encodeURIComponent(document.getElementById('blogContent').value)}`
+                }).then(res => res.json()).then(data => {
+                    alert(data.message || data.error);
+                    document.getElementById('blogContent').value = '';
+                });
+            }
+        }
+    </script>
+</body>
+</html>
